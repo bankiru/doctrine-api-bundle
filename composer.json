@@ -1,0 +1,44 @@
+{
+  "name": "bankiru/doctrine-api-bundle",
+  "description": "Doctrine-faced RPC API Client Bundle",
+  "type": "symfony-bundle",
+  "authors": [
+    {
+      "name": "Pavel Batanov",
+      "email": "batanov@banki.ru"
+    }
+  ],
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "require": {
+    "php": "~5.5|~7.0",
+    "bankiru/doctrine-api-client": "~1.0",
+    "symfony/property-access": "~2.8 | ~3.0",
+    "symfony/dependency-injection": "~2.8 | ~3.0",
+    "symfony/config": "~2.8 | ~3.0",
+    "symfony/http-kernel": "~2.8 | ~3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.5|~5.1",
+    "phpunit/php-code-coverage": "~3.3",
+    "symfony/web-profiler-bundle": "~2.8 | ~3.0",
+    "symfony/stopwatch": "~2.8 | ~3.0",
+    "symfony/monolog-bundle": "^2.8",
+    "scaytrase/json-rpc-client": "~1.0, >=1.0.1"
+  },
+  "suggest": {
+    "symfony/monolog-bundle": "For logging API requests",
+    "symfony/web-profiler-bundle": "For integrating to web-profiling bundle",
+    "symfony/stopwatch": "For profiling API requests"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bankiru\\Api\\": "src/Bankiru/Api"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  }
+}

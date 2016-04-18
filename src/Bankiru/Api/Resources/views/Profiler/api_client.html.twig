@@ -1,0 +1,150 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+
+
+{% block toolbar %}
+    {% set failed_responses = false %}
+    {% set total_calls = 0 %}
+    {% for profiler in collector.data %}
+        {% for call in profiler.calls %}
+            {% if call.response is defined %}
+                {% set failed_responses = failed_responses or not call.response.successful %}
+            {% endif %}
+        {% endfor %}
+        {% for call in profiler.responses %}
+            {% set failed_responses = failed_responses or not call.response.successful %}
+        {% endfor %}
+        {% set total_calls = total_calls + (profiler.calls | length) %}
+    {% endfor %}
+    {% if failed_responses %}
+        {% set status = 'red' %}
+    {% elseif total_calls > 50 %}
+        {% set status = 'yellow' %}
+    {% else %}
+        {% set status = 'green' %}
+    {% endif %}
+
+    {% set icon %}
+
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
+             viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+                <path fill="#AAAAAA" d="M9.8,18l-3.8,4.4c-0.3,0.3-0.8,0.4-1.1,0L1,18c-0.4-0.5-0.1-1,0.5-1H3V6.4C3,3.8,5.5,2,8.2,2h3.9
+                    c1.1,0,2,0.9,2,2s-0.9,2-2,2H8.2C7.7,6,7,6,7,6.4V17h2.2C9.8,17,10.2,17.5,9.8,18z M23,6l-3.8-4.5c-0.3-0.3-0.8-0.3-1.1,0L14.2,6
+                    c-0.4,0.5-0.1,1,0.5,1H17v10.6c0,0.4-0.7,0.4-1.2,0.4h-3.9c-1.1,0-2,0.9-2,2s0.9,2,2,2h3.9c2.6,0,5.2-1.8,5.2-4.4V7h1.5
+                    C23.1,7,23.4,6.5,23,6z"></path>
+            </svg>
+        <span class="sf-toolbar-value">{{ total_calls }}</span>
+    {% endset %}
+
+    {% set text %}
+
+        {% for profiler in collector.data %}
+            {% set local_failed_responses = 0 %}
+            {% for call in profiler.calls %}
+                {% if call.response is defined and not call.response.successful %}
+                    {% set local_failed_responses = local_failed_responses + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% for call in profiler.responses %}
+                {% if not call.response.successful %}
+                    {% set local_failed_responses = local_failed_responses + 1 %}
+                {% endif %}
+            {% endfor %}
+            <div class="sf-toolbar-info-piece">
+                <b>Client {{ profiler.clientName | capitalize }}</b>
+                <span>
+                    {% set calls = (profiler.calls | length) %}
+                    <span class="sf-toolbar-status">{{ calls }} total</span>
+                    {% if local_failed_responses > 0 %}
+                        <span class="sf-toolbar-status sf-toolbar-status-red">{{ local_failed_responses }} failed</span>
+                    {% endif %}
+                </span>
+            </div>
+        {% endfor %}
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block menu %}
+    {% set failed_responses = false %}
+    {% set total_calls = 0 %}
+    {% for profiler in collector.data %}
+        {% for call in profiler.calls %}
+            {% if call.response is defined %}
+                {% set failed_responses = failed_responses or not call.response.successful %}
+            {% endif %}
+        {% endfor %}
+        {% for call in profiler.responses %}
+            {% set failed_responses = failed_responses or not call.response.successful %}
+        {% endfor %}
+        {% set total_calls = total_calls + (profiler.calls | length) %}
+    {% endfor %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label{% if failed_responses %} label-status-error{% endif %}">
+        <span class="icon">
+             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
+                  viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+                <path fill="#AAAAAA" d="M9.8,18l-3.8,4.4c-0.3,0.3-0.8,0.4-1.1,0L1,18c-0.4-0.5-0.1-1,0.5-1H3V6.4C3,3.8,5.5,2,8.2,2h3.9
+                    c1.1,0,2,0.9,2,2s-0.9,2-2,2H8.2C7.7,6,7,6,7,6.4V17h2.2C9.8,17,10.2,17.5,9.8,18z M23,6l-3.8-4.5c-0.3-0.3-0.8-0.3-1.1,0L14.2,6
+                    c-0.4,0.5-0.1,1,0.5,1H17v10.6c0,0.4-0.7,0.4-1.2,0.4h-3.9c-1.1,0-2,0.9-2,2s0.9,2,2,2h3.9c2.6,0,5.2-1.8,5.2-4.4V7h1.5
+                    C23.1,7,23.4,6.5,23,6z"></path>
+            </svg>
+        </span>
+        <strong>
+            RPC Client
+        </strong>
+        {% if total_calls > 0 %}
+            <span class="count">{{ total_calls }}</span>
+        {% endif %}
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {# Optional, for showing the most details. #}
+    <h2>RPC calls</h2>
+    {% for profiler in collector.data %}
+        <h3>Client &laquo;{{ profiler.clientName | capitalize }}&raquo;
+            <small>Mapped responses</small>
+        </h3>
+        <table>
+            <tr>
+                <th>Success</th>
+                <th>Method</th>
+                <th>Params</th>
+                <th>Dur. (ms)</th>
+                <th>Code</th>
+                <th>Error</th>
+            </tr>
+            {% for call in profiler.calls %}
+                {% set status = call.response is defined ? (call.response.successful ? 'success' : 'error') : 'default' %}
+                {% set duration = call.stop is defined ? (call.stop - call.start) : null %}
+                <tr class="status-{{ status }}">
+                    <td>{{ call.response is defined ? (call.response.successful ? 'true' : 'false') : 'not mapped' }}</td>
+                    <td>{{ call.request.method }}</td>
+                    <td>{{ call.request.parameters | json_encode }}</td>
+                    <td>{{ (duration * 1000) | round(3) }}</td>
+                    <td>{{ call.response.error.code | default('') }}</td>
+                    <td>{{ call.response.error.message | default('') }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% if profiler.responses | length > 0 %}
+            <h3>Client &laquo;{{ profiler.clientName | capitalize }}&raquo;
+                <small>Mapped responses</small>
+            </h3>
+            <table>
+                {% for call in profiler.responses %}
+                    <tr>
+                        <td>{{ call.response.body | json_encode }}</td>
+                        <td>{{ call.response.successful ? 'true' : 'false' }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

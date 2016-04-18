@@ -1,0 +1,74 @@
+parameters:
+  bankiru_api.logger_id: logger
+  bankiru_api.profiler_enabled: "%kernel.debug%"
+
+  bankiru_api.http_defaults:
+    headers:
+      User-Agent: "Doctrine API Client"
+
+  bankiru_api.configuration.autogenerate_proxies: true
+  bankiru_api.configuration.entity_factory: Bankiru\Api\Doctrine\Proxy\ProxyFactory
+  bankiru_api.configuration.proxy_namespace: Api\Proxy
+  bankiru_api.configuration.proxy_dir: "%kernel.cache_dir%/api/proxy"
+
+services:
+  bankiru_api.chain_driver:
+    class: Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain
+    public: false
+
+  bankiru_api.http_client:
+    class: GuzzleHttp\Client
+    arguments:
+    - { defaults: "%bankiru_api.http_defaults%" }
+
+  bankiru_api.client_registry:
+    class: Bankiru\Api\ClientRegistry
+    public: false
+
+  bankiru_api.metadata_factory:
+    class: Bankiru\Api\Doctrine\EntityMetadataFactory
+    public: false
+
+  bankiru_api.type_registry_real:
+    class: Bankiru\Api\Doctrine\Type\TypeRegistry
+    public: false
+
+  bankiru_api.type_registry:
+    class: Bankiru\Api\Doctrine\Type\BaseTypeRegistry
+    arguments:
+    - "@bankiru_api.type_registry_real"
+    public: false
+
+  bankiru_api.configuration:
+    public: false
+    class: Bankiru\Api\Doctrine\Configuration
+    calls:
+    - [setMetadataFactory, ["@bankiru_api.metadata_factory"]]
+    - [setRegistry, ["@bankiru_api.client_registry"]]
+    - [setAutogenerateProxies, ["%bankiru_api.configuration.autogenerate_proxies%"]]
+    - [setProxyDir, ["%bankiru_api.configuration.proxy_dir%"]]
+    - [setProxyNamespace, ["%bankiru_api.configuration.proxy_namespace%"]]
+    - [setDriver, ["@bankiru_api.chain_driver"]]
+    - [setTypeRegistry, ["@bankiru_api.type_registry"]]
+
+  bankiru_api.entity_manager:
+    class: Bankiru\Api\Doctrine\EntityManager
+    arguments:
+    - "@bankiru_api.configuration"
+
+  bankiru_api:
+    alias: bankiru_api.entity_manager
+
+  bankiru_api.client.abstract:
+    class: ScayTrase\Api\JsonRpc\JsonRpcClient
+    public: false
+    abstract: true
+    arguments:
+    - "@bankiru_api.http_client"
+
+  bankiru_api.profiler.collector:
+    class: Bankiru\Api\DataCollector\ClientProfilingCollector
+    tags:
+    - name: data_collector
+      template: 'ApiBundle:Profiler:api_client.html.twig'
+      id:       'api_client'

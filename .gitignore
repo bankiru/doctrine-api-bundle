@@ -1,0 +1,6 @@
+vendor/
+build/
+var/
+target/
+*.phar
+composer.lock
