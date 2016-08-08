@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: batanov.pavel
- * Date: 22.03.2016
- * Time: 9:55
- */
 
 namespace Bankiru\Api\Client\Profiling;
-
 
 use Bankiru\Api\DataCollector\RpcProfiler;
 use ScayTrase\Api\Rpc\ResponseCollectionInterface;

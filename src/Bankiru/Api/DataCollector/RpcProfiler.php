@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: batanov.pavel
- * Date: 21.03.2016
- * Time: 15:40
- */
 
 namespace Bankiru\Api\DataCollector;
 

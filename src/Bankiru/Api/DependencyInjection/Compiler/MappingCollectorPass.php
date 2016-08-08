@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: batanov.pavel
- * Date: 09.02.2016
- * Time: 15:27
- */
 
 namespace Bankiru\Api\DependencyInjection\Compiler;
 
