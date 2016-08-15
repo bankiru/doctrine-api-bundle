@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
         $logger->addDefaultsIfNotSet();
         $logger->children()->scalarNode('id')->defaultValue('logger');
 
-        $profiling = $root->children()->booleanNode('profiling')->defaultValue('%kernel.debug%');
+        $root->children()->booleanNode('profiling')->defaultValue('%kernel.debug%');
 
         $cache = $root->children()->arrayNode('cache');
         $cache->addDefaultsIfNotSet();

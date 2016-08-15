@@ -2,7 +2,6 @@
 
 namespace Bankiru\Api\DependencyInjection;
 
-use Bankiru\Api\Doctrine\ApiEntityCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -40,7 +39,7 @@ class ApiExtension extends Extension
             if (null === $config['cache']['service']) {
                 throw new \LogicException('You should specify PSR-6 cache service in order to enable caching');
             }
-            
+
             $configuration->addMethodCall('setApiCache', [new Reference($config['cache']['service'])]);
             if ($config['cache']['logger'] !== null) {
                 $configuration->addMethodCall('setApiCacheLogger', [new Reference($config['cache']['logger'])]);
