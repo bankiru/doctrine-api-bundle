@@ -30,7 +30,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     [
                         'configuration' => [
                             'TestEntity' => [
-                                'ttl' => 10,
+                                'ttl'   => 10,
+                                'extra' => [
+                                    'quick_search' => false,
+                                ],
                             ],
                         ],
                     ],
@@ -49,6 +52,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'configuration' => [
                             'TestEntity' => [
                                 'enabled' => false,
+                                'extra'   => [
+                                    'quick_search' => true,
+                                ],
                             ],
                         ],
                     ],
@@ -63,9 +69,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('test_cache', $configs['cache']['service']);
         self::assertFalse($configs['cache']['configuration']['TestEntity']['enabled']);
         self::assertEquals(900, $configs['cache']['configuration']['TestEntity']['ttl']);
+        self::assertTrue($configs['cache']['configuration']['TestEntity']['extra']['quick_search']);
         self::assertEquals('logger', $configs['cache']['logger']);
 
-        $builder = new ContainerBuilder();
+        $builder   = new ContainerBuilder();
         $extension = new ApiExtension();
         $extension->load($rawConfigs, $builder);
     }

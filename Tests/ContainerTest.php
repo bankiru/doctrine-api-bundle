@@ -62,7 +62,7 @@ abstract class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $container->compile();
         $dumper = new PhpDumper($container);
-        $dumper->dump();
+        file_put_contents(CACHE_DIR . '/container.php', $dumper->dump());
 
         return $container;
     }

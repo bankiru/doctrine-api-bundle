@@ -3,10 +3,10 @@
 namespace Bankiru\Api\Tests;
 
 use Bankiru\Api\ApiBundle;
-use Bankiru\Api\Client\Profiling\TraceableClient;
-use Bankiru\Api\ClientRegistryInterface;
-use GuzzleHttp\Psr7\Response;
-use ScayTrase\Api\JsonRpc\JsonRpcRequest;
+use Bankiru\Api\Client\TraceableClient;
+use Bankiru\Api\Doctrine\ClientRegistryInterface;
+use Bankiru\Api\Doctrine\Test\RpcRequestMock;
+use ScayTrase\Api\Rpc\RpcResponseInterface;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -28,36 +28,28 @@ class StopwatchTest extends ContainerTest
             ]
         );
 
-        self::assertTrue($container->has('test_rpc_client'));
-        self::assertInstanceOf(TraceableClient::class, $container->get('test_rpc_client'));
+        self::assertTrue($container->has('rpc.test_client'));
+        self::assertInstanceOf(TraceableClient::class, $container->get('rpc.test_client'));
 
         /** @var ClientRegistryInterface $registry */
-        $registry = $container->get('bankiru_api.entity_manager')->getConfiguration()->getRegistry();
+        $registry = $container->get('bankiru_api.entity_manager')->getConfiguration()->getClientRegistry();
         foreach ($registry->all() as $client) {
             self::assertInstanceOf(TraceableClient::class, $client);
         }
 
-        $mock = $container->get('bankiru_api.test.test_guzzle_mock');
-        $mock->append(
-            new Response(
-                200,
-                [],
-                json_encode(
-                    [
-                        'jsonrpc' => '2.0',
-                        'id'      => 'test',
-                        'result'  => [
-                            'id'          => 2,
-                            'payload'     => 'test-payload',
-                            'sub-payload' => 'sub-payload',
-                        ],
-                    ]
-                )
+        $mock = $container->get('rpc.client_mock');
+        $mock->push(
+            $this->getSuccessResponseMock(
+                (object)[
+                    'id'          => 2,
+                    'payload'     => 'test-payload',
+                    'sub-payload' => 'sub-payload',
+                ]
             )
         );
 
-        $client     = $container->get('test_rpc_client');
-        $request    = new JsonRpcRequest('test', [], 'test');
+        $client     = $container->get('rpc.test_client');
+        $request    = new RpcRequestMock('test', []);
         $collection = $client->invoke($request);
 
         foreach ($collection as $response) {
@@ -89,5 +81,15 @@ class StopwatchTest extends ContainerTest
 
         self::assertEquals('api_client', $collector->getName());
         $collector->collect(new Request(), new SymfonyResponse());
+    }
+
+    private function getSuccessResponseMock($result)
+    {
+        $mock = $this->prophesize(RpcResponseInterface::class);
+        $mock->isSuccessful()->willReturn(true);
+        $mock->getBody()->willReturn($result);
+        $mock->getError()->willReturn(null);
+
+        return $mock->reveal();
     }
 }

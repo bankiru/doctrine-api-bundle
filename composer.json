@@ -12,7 +12,8 @@
   "minimum-stability": "stable",
   "require": {
     "php": "~5.5 || ~7.0",
-    "bankiru/doctrine-api-client": "~1.0",
+    "bankiru/doctrine-api-client": "dev-release/2.0",
+    "bankiru/jsonrpc-browser-kit-client": "dev-master",
     "symfony/property-access": "~2.8 || ~3.0",
     "symfony/dependency-injection": "~2.8 || ~3.0",
     "symfony/config": "~2.8 || ~3.0",
@@ -22,8 +23,7 @@
     "phpunit/phpunit": "~4.8 || ~5.1",
     "symfony/web-profiler-bundle": "~2.8 || ~3.0",
     "symfony/stopwatch": "~2.8 || ~3.0",
-    "symfony/monolog-bundle": "^2.8",
-    "scaytrase/json-rpc-client": "~1.0, >=1.0.1"
+    "symfony/monolog-bundle": "^2.8"
   },
   "suggest": {
     "symfony/monolog-bundle": "For logging API requests",
@@ -32,7 +32,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Bankiru\\Api\\": "src/Bankiru/Api"
+      "Bankiru\\Api\\": "./"
     }
   },
   "extra": {

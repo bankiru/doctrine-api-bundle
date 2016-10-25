@@ -1,0 +1,20 @@
+services:
+  bankiru_api.test.client_mock:
+    class: ScayTrase\Api\Rpc\Test\RpcMockClient
+    public: false
+
+  bankiru_api.test.client:
+    class: Bankiru\Api\Tests\TestClient
+    arguments:
+    - "@bankiru_api.test.client_mock"
+    tags:
+    - { name: rpc_client, client_name: test_client }
+
+  rpc.test_client:
+    alias: bankiru_api.test.client
+
+  rpc.client_mock:
+    alias: bankiru_api.test.client_mock
+
+  debug.stopwatch:
+    class: Symfony\Component\Stopwatch\Stopwatch

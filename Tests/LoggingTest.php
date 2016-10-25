@@ -3,7 +3,7 @@
 namespace Bankiru\Api\Tests;
 
 use Bankiru\Api\ApiBundle;
-use Bankiru\Api\ClientRegistryInterface;
+use Bankiru\Api\Doctrine\ClientRegistryInterface;
 use ScayTrase\Api\Rpc\Decorators\LoggableRpcClient;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 
@@ -26,11 +26,11 @@ class LoggingTest extends ContainerTest
             ]
         );
 
-        self::assertTrue($container->has('test_rpc_client'));
-        self::assertInstanceOf(LoggableRpcClient::class, $container->get('test_rpc_client'));
+        self::assertTrue($container->has('rpc.test_client'));
+        self::assertInstanceOf(LoggableRpcClient::class, $container->get('rpc.test_client'));
 
         /** @var ClientRegistryInterface $registry */
-        $registry = $container->get('bankiru_api.entity_manager')->getConfiguration()->getRegistry();
+        $registry = $container->get('bankiru_api.entity_manager')->getConfiguration()->getClientRegistry();
         foreach ($registry->all() as $client) {
             self::assertInstanceOf(LoggableRpcClient::class, $client);
         }
