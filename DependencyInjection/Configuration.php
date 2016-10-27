@@ -30,7 +30,7 @@ class Configuration implements ConfigurationInterface
             ->treatFalseLike(['enabled' => false])
             ->treatTrueLike(['enabled' => true])
             ->treatNullLike(['enabled' => true]);
-        $cache->children()->scalarNode('service')->isRequired()->info('PSR-6 Cache service. Required if enabled');
+        $cache->children()->scalarNode('service')->info('PSR-6 Cache service. Required if enabled');
         $cache->children()->scalarNode('logger')->defaultNull()->info('PSR-3 Log service for cache');
         $cache->beforeNormalization()->ifString()->then(
             function ($v) {

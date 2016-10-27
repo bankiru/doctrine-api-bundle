@@ -3,6 +3,7 @@
 namespace Bankiru\Api;
 
 use Bankiru\Api\DependencyInjection\ApiExtension;
+use Bankiru\Api\DependencyInjection\Compiler\ApiFactoryPass;
 use Bankiru\Api\DependencyInjection\Compiler\ClientCollectorPass;
 use Bankiru\Api\DependencyInjection\Compiler\LoggerDecoratorPass;
 use Bankiru\Api\DependencyInjection\Compiler\MappingCollectorPass;
@@ -19,6 +20,7 @@ class ApiBundle extends Bundle
         $container->addCompilerPass(new MappingCollectorPass());
         $container->addCompilerPass(new LoggerDecoratorPass());
         $container->addCompilerPass(new ProfilerDecoratorPass());
+        $container->addCompilerPass(new ApiFactoryPass());
     }
 
     public function getContainerExtension()
