@@ -29,6 +29,11 @@ class MappingCollectorPass implements CompilerPassInterface
             /** @var BundleInterface $bundle */
             $refl      = new \ReflectionClass($bundle);
             $path      = dirname($refl->getFileName()) . '/Resources/config/api/';
+
+            if (!is_dir($path)) {
+                continue;
+            }
+
             $namespace = $refl->getNamespaceName() . '\Entity';
 
             $locatorDef = new Definition(
