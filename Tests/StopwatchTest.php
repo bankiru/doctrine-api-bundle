@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class StopwatchTest extends ContainerTest
 {
+    /**
+     * @group time-sensitive
+     */
     public function testClientClass()
     {
         $container = $this->buildContainer(
@@ -45,7 +48,12 @@ class StopwatchTest extends ContainerTest
                     'payload'     => 'test-payload',
                     'sub-payload' => 'sub-payload',
                 ]
-            )
+            ),
+            function () {
+                usleep(1000);
+
+                return true;
+            }
         );
 
         $client     = $container->get('rpc.test_client');
