@@ -3,13 +3,14 @@
 namespace Bankiru\Api\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfigurationPass;
 
-abstract class ContainerTest extends \PHPUnit_Framework_TestCase
+abstract class ContainerTest extends TestCase
 {
     /**
      * @param BundleInterface[] $bundles

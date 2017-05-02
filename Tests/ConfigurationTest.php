@@ -4,10 +4,11 @@ namespace Bankiru\Api\Tests;
 
 use Bankiru\Api\DependencyInjection\ApiExtension;
 use Bankiru\Api\DependencyInjection\Configuration;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends TestCase
 {
     public function testConfigParsing()
     {
