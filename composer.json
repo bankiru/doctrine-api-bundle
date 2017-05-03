@@ -30,7 +30,8 @@
   "suggest": {
     "symfony/monolog-bundle": "For logging API requests",
     "symfony/web-profiler-bundle": "For integrating to web-profiling bundle",
-    "symfony/stopwatch": "For profiling API requests"
+    "symfony/stopwatch": "For profiling API requests",
+    "sensio/framework-extra-bundle": "For ParamConverter controller arguments support"
   },
   "autoload": {
     "psr-4": {

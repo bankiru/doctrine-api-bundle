@@ -47,11 +47,7 @@ class BankiruDoctrineApiExtension extends Extension
             }
         }
 
-        if ($container->hasParameter('kernel.bundles')) {
-            if (in_array(SensioFrameworkExtraBundle::class, $container->getParameter('kernel.bundles'))) {
-                $loader->load('sensio.yml');
-            }
-        }
+        $this->processSensioExtraConfig($container, $loader);
 
         foreach ($config['cache']['configuration'] as $class => $options) {
             assert(array_key_exists('enabled', $options));
@@ -63,5 +59,24 @@ class BankiruDoctrineApiExtension extends Extension
     public function getAlias()
     {
         return 'api_client';
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param YamlFileLoader   $loader
+     */
+    private function processSensioExtraConfig(ContainerBuilder $container, YamlFileLoader $loader)
+    {
+        if (!$container->hasParameter('kernel.bundles')) {
+            return;
+        }
+
+        if (!class_exists('Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle')) {
+            return;
+        }
+
+        if (in_array(SensioFrameworkExtraBundle::class, $container->getParameter('kernel.bundles'))) {
+            $loader->load('sensio.yml');
+        }
     }
 }
