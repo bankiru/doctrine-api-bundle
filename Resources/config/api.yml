@@ -91,5 +91,5 @@ services:
     class: Bankiru\Api\DataCollector\ClientProfilingCollector
     tags:
     - name: data_collector
-      template: 'ApiBundle:Profiler:api_client.html.twig'
+      template: 'BankiruDoctrineApiBundle:Profiler:api_client.html.twig'
       id:       'api_client'
