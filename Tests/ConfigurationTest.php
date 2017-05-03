@@ -2,13 +2,13 @@
 
 namespace Bankiru\Api\Tests;
 
-use Bankiru\Api\DependencyInjection\ApiExtension;
+use Bankiru\Api\DependencyInjection\BankiruDoctrineApiExtension;
 use Bankiru\Api\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class ConfigurationTest extends TestCase
+final class ConfigurationTest extends TestCase
 {
     public function testConfigParsing()
     {
@@ -74,7 +74,7 @@ class ConfigurationTest extends TestCase
         self::assertEquals('logger', $configs['cache']['logger']);
 
         $builder   = new ContainerBuilder();
-        $extension = new ApiExtension();
+        $extension = new BankiruDoctrineApiExtension();
         $extension->load($rawConfigs, $builder);
     }
 }

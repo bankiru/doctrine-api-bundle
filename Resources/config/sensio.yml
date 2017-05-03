@@ -1,0 +1,13 @@
+services:
+  bankiru_api.sensio_bridge.mapper_registry:
+    class: Bankiru\Api\Adapters\Sensio\MapperRegistry
+    public: false
+    arguments:
+    - "@bankiru_api"
+
+  bankiru_api.sensio_bridge.doctrine_param_converter:
+    class: Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter
+    arguments:
+    - "@bankiru_api.sensio_bridge.mapper_registry"
+    tags:
+    - { name: "request.param_converter",  converter: "doctrine.api" }

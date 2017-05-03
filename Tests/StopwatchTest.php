@@ -2,17 +2,20 @@
 
 namespace Bankiru\Api\Tests;
 
-use Bankiru\Api\ApiBundle;
+use Bankiru\Api\BankiruDoctrineApiBundle;
 use Bankiru\Api\Client\TraceableClient;
 use Bankiru\Api\Doctrine\ClientRegistryInterface;
 use Bankiru\Api\Doctrine\Test\RpcRequestMock;
+use PHPUnit\Framework\TestCase;
 use ScayTrase\Api\Rpc\RpcResponseInterface;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class StopwatchTest extends ContainerTest
+final class StopwatchTest extends TestCase
 {
+    use ContainerTestTrait;
+
     /**
      * @group time-sensitive
      */
@@ -21,7 +24,7 @@ class StopwatchTest extends ContainerTest
         $container = $this->buildContainer(
             [
                 new MonologBundle(),
-                new ApiBundle(),
+                new BankiruDoctrineApiBundle(),
             ],
             [
                 'api_client' => [
@@ -89,6 +92,12 @@ class StopwatchTest extends ContainerTest
 
         self::assertEquals('api_client', $collector->getName());
         $collector->collect(new Request(), new SymfonyResponse());
+    }
+
+    /** {@inheritdoc} */
+    protected function getCacheDir()
+    {
+        return CACHE_DIR;
     }
 
     private function getSuccessResponseMock($result)

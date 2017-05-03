@@ -2,13 +2,14 @@
 
 namespace Bankiru\Api\DependencyInjection;
 
+use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ApiExtension extends Extension
+class BankiruDoctrineApiExtension extends Extension
 {
     /**
      * Loads a specific configuration.
@@ -43,6 +44,12 @@ class ApiExtension extends Extension
             $configuration->addMethodCall('setApiCache', [new Reference($config['cache']['service'])]);
             if ($config['cache']['logger'] !== null) {
                 $configuration->addMethodCall('setApiCacheLogger', [new Reference($config['cache']['logger'])]);
+            }
+        }
+
+        if ($container->hasParameter('kernel.bundles')) {
+            if (in_array(SensioFrameworkExtraBundle::class, $container->getParameter('kernel.bundles'))) {
+                $loader->load('sensio.yml');
             }
         }
 

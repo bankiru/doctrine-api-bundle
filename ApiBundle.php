@@ -2,29 +2,14 @@
 
 namespace Bankiru\Api;
 
-use Bankiru\Api\DependencyInjection\ApiExtension;
-use Bankiru\Api\DependencyInjection\Compiler\ApiFactoryPass;
-use Bankiru\Api\DependencyInjection\Compiler\ClientCollectorPass;
-use Bankiru\Api\DependencyInjection\Compiler\LoggerDecoratorPass;
-use Bankiru\Api\DependencyInjection\Compiler\MappingCollectorPass;
-use Bankiru\Api\DependencyInjection\Compiler\ProfilerDecoratorPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+trigger_error(
+    sprintf('Class "%s" is deprectated, use "%s" instead', ApiBundle::class, BankiruDoctrineApiBundle::class),
+    E_USER_DEPRECATED
+);
 
-class ApiBundle extends Bundle
+/**
+ * @deprecated
+ */
+final class ApiBundle extends BankiruDoctrineApiBundle
 {
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-        $container->addCompilerPass(new ClientCollectorPass());
-        $container->addCompilerPass(new MappingCollectorPass());
-        $container->addCompilerPass(new LoggerDecoratorPass());
-        $container->addCompilerPass(new ProfilerDecoratorPass());
-        $container->addCompilerPass(new ApiFactoryPass());
-    }
-
-    public function getContainerExtension()
-    {
-        return new ApiExtension();
-    }
 }

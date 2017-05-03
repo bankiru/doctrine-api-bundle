@@ -24,7 +24,8 @@
     "symfony/web-profiler-bundle": "~2.8 | ~3.0",
     "symfony/stopwatch": "~2.8 | ~3.0",
     "symfony/monolog-bundle": "^2.8 | ^3.0",
-    "symfony/phpunit-bridge": "^2.8 | ^3.0"
+    "symfony/phpunit-bridge": "^2.8 | ^3.0",
+    "sensio/framework-extra-bundle": "~3.0"
   },
   "suggest": {
     "symfony/monolog-bundle": "For logging API requests",
