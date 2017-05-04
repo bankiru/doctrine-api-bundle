@@ -2,6 +2,7 @@
 
 namespace Bankiru\Api\DependencyInjection;
 
+use Doctrine\Common\Cache\Cache;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -20,16 +21,19 @@ class Configuration implements ConfigurationInterface
 
         $root->children()->booleanNode('profiling')->defaultValue('%kernel.debug%');
 
-        $cache = $root->children()->arrayNode('cache');
-        $cache->addDefaultsIfNotSet();
-        $cache->children()
-              ->booleanNode('enabled')
-              ->defaultFalse();
-        $cache
-            ->addDefaultsIfNotSet()
-            ->treatFalseLike(['enabled' => false])
-            ->treatTrueLike(['enabled' => true])
-            ->treatNullLike(['enabled' => true]);
+        $metadataCache = $root->children()->arrayNode('metadata_cache');
+        $metadataCache->canBeEnabled();
+        $metadataCache->children()->scalarNode('service')->info(
+            Cache::class . ' Implementation service id. Required if enabled'
+        )->defaultNull();
+        $metadataCache->beforeNormalization()->ifString()->then(
+            function ($v) {
+                return ['service' => $v, 'enabled' => true];
+            }
+        );
+
+        $cache = $root->children()->arrayNode('entity_cache');
+        $cache->canBeEnabled();
         $cache->children()->scalarNode('service')->info('PSR-6 Cache service. Required if enabled');
         $cache->children()->scalarNode('logger')->defaultNull()->info('PSR-3 Log service for cache');
         $cache->beforeNormalization()->ifString()->then(

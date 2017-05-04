@@ -11,14 +11,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class BankiruDoctrineApiExtension extends Extension
 {
-    /**
-     * Loads a specific configuration.
-     *
-     * @param array            $configs   An array of configuration values
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     *
-     * @throws \InvalidArgumentException When provided tag is not defined in this extension
-     */
+    /** {@inheritdoc} */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
@@ -36,20 +29,25 @@ class BankiruDoctrineApiExtension extends Extension
         $container->setParameter('bankiru_api.profiler_enabled', $config['profiling']);
 
         $configuration = $container->getDefinition('bankiru_api.configuration');
-        if ($config['cache']['enabled']) {
-            if (null === $config['cache']['service']) {
+        if ($this->isConfigEnabled($container, $config['entity_cache'])) {
+            if (null === $config['entity_cache']['service']) {
                 throw new \LogicException('You should specify PSR-6 cache service in order to enable caching');
             }
 
-            $configuration->addMethodCall('setApiCache', [new Reference($config['cache']['service'])]);
-            if ($config['cache']['logger'] !== null) {
-                $configuration->addMethodCall('setApiCacheLogger', [new Reference($config['cache']['logger'])]);
+            $configuration->addMethodCall('setApiCache', [new Reference($config['entity_cache']['service'])]);
+            if ($config['entity_cache']['logger'] !== null) {
+                $configuration->addMethodCall('setApiCacheLogger', [new Reference($config['entity_cache']['logger'])]);
             }
+        }
+
+        if ($this->isConfigEnabled($container, $config['metadata_cache'])) {
+            $container->getDefinition('bankiru_api.metadata_factory')
+                      ->addMethodCall('setCacheDriver', [new Reference($config['metadata_cache']['service'])]);
         }
 
         $this->processSensioExtraConfig($container, $loader);
 
-        foreach ($config['cache']['configuration'] as $class => $options) {
+        foreach ($config['entity_cache']['configuration'] as $class => $options) {
             assert(array_key_exists('enabled', $options));
             assert(array_key_exists('ttl', $options));
             $configuration->addMethodCall('setCacheConfiguration', [$class, $options]);

@@ -16,11 +16,6 @@ services:
     class: Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain
     public: false
 
-  bankiru_api.http_client:
-    class: GuzzleHttp\Client
-    arguments:
-    - { defaults: "%bankiru_api.http_defaults%" }
-
   bankiru_api.client_registry:
     class: Bankiru\Api\Doctrine\ClientRegistry
     public: false
@@ -79,13 +74,6 @@ services:
 
   bankiru_api:
     alias: bankiru_api.entity_manager
-
-  bankiru_api.client.abstract:
-    class: ScayTrase\Api\JsonRpc\JsonRpcClient
-    public: false
-    abstract: true
-    arguments:
-    - "@bankiru_api.http_client"
 
   bankiru_api.profiler.collector:
     class: Bankiru\Api\DataCollector\ClientProfilingCollector

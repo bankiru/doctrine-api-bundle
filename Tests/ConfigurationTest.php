@@ -10,24 +10,25 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class ConfigurationTest extends TestCase
 {
-    public function testConfigParsing()
+    public function testEntityCacheConfigParsing()
     {
         $configuration = new Configuration();
         $processor     = new Processor();
         $rawConfigs    = [
             [
-                'cache' => null,
+                'entity_cache'   => null,
             ],
             [
-                'cache' => 'test_cache',
+                'entity_cache'   => 'test_cache',
+
             ],
             [
-                'cache' => [
+                'entity_cache'   => [
                     'logger' => 'logger',
                 ],
             ],
             [
-                'cache' =>
+                'entity_cache'   =>
                     [
                         'configuration' => [
                             'TestEntity' => [
@@ -40,7 +41,7 @@ final class ConfigurationTest extends TestCase
                     ],
             ],
             [
-                'cache' =>
+                'entity_cache'   =>
                     [
                         'configuration' => [
                             'TestEntity' => 900,
@@ -48,7 +49,7 @@ final class ConfigurationTest extends TestCase
                     ],
             ],
             [
-                'cache' =>
+                'entity_cache'   =>
                     [
                         'configuration' => [
                             'TestEntity' => [
@@ -66,12 +67,12 @@ final class ConfigurationTest extends TestCase
             $rawConfigs
         );
 
-        self::assertTrue($configs['cache']['enabled']);
-        self::assertEquals('test_cache', $configs['cache']['service']);
-        self::assertFalse($configs['cache']['configuration']['TestEntity']['enabled']);
-        self::assertEquals(900, $configs['cache']['configuration']['TestEntity']['ttl']);
-        self::assertTrue($configs['cache']['configuration']['TestEntity']['extra']['quick_search']);
-        self::assertEquals('logger', $configs['cache']['logger']);
+        self::assertTrue($configs['entity_cache']['enabled']);
+        self::assertEquals('test_cache', $configs['entity_cache']['service']);
+        self::assertFalse($configs['entity_cache']['configuration']['TestEntity']['enabled']);
+        self::assertEquals(900, $configs['entity_cache']['configuration']['TestEntity']['ttl']);
+        self::assertTrue($configs['entity_cache']['configuration']['TestEntity']['extra']['quick_search']);
+        self::assertEquals('logger', $configs['entity_cache']['logger']);
 
         $builder   = new ContainerBuilder();
         $extension = new BankiruDoctrineApiExtension();
