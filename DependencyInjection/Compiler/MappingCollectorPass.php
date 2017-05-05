@@ -26,9 +26,13 @@ class MappingCollectorPass implements CompilerPassInterface
         $driver = $container->getDefinition('bankiru_api.chain_driver');
 
         foreach ($container->getParameter('kernel.bundles') as $bundle) {
-            /** @var BundleInterface $bundle */
-            $refl      = new \ReflectionClass($bundle);
-            $path      = dirname($refl->getFileName()) . '/Resources/config/api/';
+            $refl = new \ReflectionClass($bundle);
+            $path = dirname($refl->getFileName()) . '/Resources/config/api/';
+
+            if (!is_dir($path)) {
+                continue;
+            }
+
             $namespace = $refl->getNamespaceName() . '\Entity';
 
             $locatorDef = new Definition(
@@ -38,10 +42,10 @@ class MappingCollectorPass implements CompilerPassInterface
                         $path => $namespace,
                     ],
                     '.api.yml',
-                    DIRECTORY_SEPARATOR
+                    DIRECTORY_SEPARATOR,
                 ]
             );
-            $driverDef = new Definition(YmlMetadataDriver::class,[$locatorDef]);
+            $driverDef  = new Definition(YmlMetadataDriver::class, [$locatorDef]);
 
             $driver->addMethodCall('addDriver', [$driverDef, $namespace]);
         }

@@ -30,12 +30,10 @@ This bundle automatically registers all services, marked with `rpc_client`
 tag into the library client registry, i.e
 
 ```yaml
-  bankiru_api.test.test_rpc_client:
-    class: Bankiru\Api\Test\TestClient
-    public: false
+  bankiru_api.test.client:
+    class: Bankiru\Api\Tests\TestClient
     arguments:
-    - "@bankiru_api.test.test_guzzle_mock"
-    - "@bankiru_api.test.uuid_generator"
+    - "@bankiru_api.test.client_mock"
     tags:
     - { name: rpc_client, client_name: test_client }
 ```
@@ -46,3 +44,46 @@ This bundle enables RPC client profiling and time tracing with internal
 Symfony components - stopwatch and web debug toolbar.
 
 @Todo: populate with screenshots
+
+
+### Cache configuration
+
+```yml
+# TTL only
+api_client:
+    cache:
+        configuration:
+            Bankiru\Api\Doctrine\Test\Entity\TestEntity: 900
+```
+
+```yml
+# Default
+api_client:
+    cache:
+        configuration:
+            Bankiru\Api\Doctrine\Test\Entity\TestEntity:
+                enabled: false
+```
+
+```yml
+# Enabled defaults
+api_client:
+    cache:
+        configuration:
+            Bankiru\Api\Doctrine\Test\Entity\TestEntity:
+                enabled: true
+                ttl: ~
+                extra: {}
+```
+
+```yml
+# Extra keys would be available within API entity cache via CacheConfigurationInterface
+api_client:
+    cache:
+        configuration:
+            Bankiru\Api\Doctrine\Test\Entity\TestEntity:
+                enabled: true
+                ttl: 900
+                extra:
+                    quick_search: true
+```

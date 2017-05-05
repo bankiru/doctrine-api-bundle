@@ -9,8 +9,15 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfigurationPass;
 
-abstract class ContainerTest extends \PHPUnit_Framework_TestCase
+trait ContainerTestTrait
 {
+    /**
+     * Returns Cache directory location
+     *
+     * @return string
+     */
+    abstract protected function getCacheDir();
+
     /**
      * @param BundleInterface[] $bundles
      * @param array             $configs
@@ -25,7 +32,7 @@ abstract class ContainerTest extends \PHPUnit_Framework_TestCase
                 [
                     'kernel.debug'       => false,
                     'kernel.bundles'     => array_map('get_class', $bundles),
-                    'kernel.cache_dir'   => CACHE_DIR . 'test',
+                    'kernel.cache_dir'   => $this->getCacheDir() . 'test',
                     'kernel.environment' => 'test',
                     'kernel.root_dir'    => __DIR__,
                 ]
@@ -44,12 +51,12 @@ abstract class ContainerTest extends \PHPUnit_Framework_TestCase
             $container->addObjectResource($bundle);
         }
 
-        foreach ($bundles as $bundle) {
-            $bundle->build($container);
-        }
-
         foreach ($configs as $alias => $config) {
             $container->prependExtensionConfig($alias, $config);
+        }
+
+        foreach ($bundles as $bundle) {
+            $bundle->build($container);
         }
 
         // ensure these extensions are implicitly loaded
@@ -60,6 +67,15 @@ abstract class ContainerTest extends \PHPUnit_Framework_TestCase
             $bundle->boot();
         }
 
+        if ($compile) {
+            return $this->compile($container);
+        }
+
+        return $container;
+    }
+
+    protected function compile(ContainerBuilder $container)
+    {
         $container->compile();
         $dumper = new PhpDumper($container);
         $dumper->dump();

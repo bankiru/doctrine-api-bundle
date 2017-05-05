@@ -1,6 +1,6 @@
 <?php
 
-namespace Bankiru\Api\Client\Profiling;
+namespace Bankiru\Api\Client;
 
 use ScayTrase\Api\Rpc\ResponseCollectionInterface;
 use ScayTrase\Api\Rpc\RpcRequestInterface;

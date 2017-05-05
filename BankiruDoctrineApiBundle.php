@@ -2,7 +2,8 @@
 
 namespace Bankiru\Api;
 
-use Bankiru\Api\DependencyInjection\ApiExtension;
+use Bankiru\Api\DependencyInjection\BankiruDoctrineApiExtension;
+use Bankiru\Api\DependencyInjection\Compiler\ApiFactoryPass;
 use Bankiru\Api\DependencyInjection\Compiler\ClientCollectorPass;
 use Bankiru\Api\DependencyInjection\Compiler\LoggerDecoratorPass;
 use Bankiru\Api\DependencyInjection\Compiler\MappingCollectorPass;
@@ -10,7 +11,7 @@ use Bankiru\Api\DependencyInjection\Compiler\ProfilerDecoratorPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ApiBundle extends Bundle
+class BankiruDoctrineApiBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
@@ -19,10 +20,11 @@ class ApiBundle extends Bundle
         $container->addCompilerPass(new MappingCollectorPass());
         $container->addCompilerPass(new LoggerDecoratorPass());
         $container->addCompilerPass(new ProfilerDecoratorPass());
+        $container->addCompilerPass(new ApiFactoryPass());
     }
 
     public function getContainerExtension()
     {
-        return new ApiExtension();
+        return new BankiruDoctrineApiExtension();
     }
 }

@@ -14,20 +14,21 @@
         bootstrap="vendor/autoload.php">
 
     <php>
-        <const name="CACHE_DIR" value="./var/cache/"/>
+        <const name="CACHE_DIR" value="./build"/>
     </php>
 
     <testsuites>
         <testsuite name="All tests">
-            <directory>src/*</directory>
+            <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>src</directory>
+            <directory>./</directory>
         </whitelist>
         <blacklist>
+            <directory>Tests/</directory>
             <directory>vendor/</directory>
             <directory>build/</directory>
             <directory>target/</directory>

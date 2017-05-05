@@ -2,8 +2,8 @@
 
 namespace Bankiru\Api\DependencyInjection\Compiler;
 
-use Bankiru\Api\Client\Profiling\ProfiledClient;
-use Bankiru\Api\Client\Profiling\TraceableClient;
+use Bankiru\Api\Client\ProfiledClient;
+use Bankiru\Api\Client\TraceableClient;
 use Bankiru\Api\DataCollector\RpcProfiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

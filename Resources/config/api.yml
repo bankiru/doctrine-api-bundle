@@ -16,14 +16,29 @@ services:
     class: Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain
     public: false
 
-  bankiru_api.http_client:
-    class: GuzzleHttp\Client
-    arguments:
-    - { defaults: "%bankiru_api.http_defaults%" }
-
   bankiru_api.client_registry:
-    class: Bankiru\Api\ClientRegistry
+    class: Bankiru\Api\Doctrine\ClientRegistry
     public: false
+
+  bankiru_api.factory_registry:
+    alias: bankiru_api.api_factory.chain
+
+  bankiru_api.api_factory.chain:
+    class: Bankiru\Api\Doctrine\ApiFactory\ChainApiFactoryRegistry
+    public: false
+
+  bankiru_api.api_factory.static:
+    class: Bankiru\Api\Doctrine\ApiFactory\StaticApiFactoryFactory
+    public: false
+    tags:
+    - { name: bankiru.api_factory }
+
+  bankiru_api.api_factory.container:
+    class: Bankiru\Api\ContainerApiFactory
+    arguments: ["@service_container"]
+    public: false
+    tags:
+    - { name: bankiru.api_factory }
 
   bankiru_api.metadata_factory:
     class: Bankiru\Api\Doctrine\EntityMetadataFactory
@@ -44,7 +59,8 @@ services:
     class: Bankiru\Api\Doctrine\Configuration
     calls:
     - [setMetadataFactory, ["@bankiru_api.metadata_factory"]]
-    - [setRegistry, ["@bankiru_api.client_registry"]]
+    - [setClientRegistry, ["@bankiru_api.client_registry"]]
+    - [setFactoryRegistry, ["@bankiru_api.factory_registry"]]
     - [setAutogenerateProxies, ["%bankiru_api.configuration.autogenerate_proxies%"]]
     - [setProxyDir, ["%bankiru_api.configuration.proxy_dir%"]]
     - [setProxyNamespace, ["%bankiru_api.configuration.proxy_namespace%"]]
@@ -59,16 +75,9 @@ services:
   bankiru_api:
     alias: bankiru_api.entity_manager
 
-  bankiru_api.client.abstract:
-    class: ScayTrase\Api\JsonRpc\JsonRpcClient
-    public: false
-    abstract: true
-    arguments:
-    - "@bankiru_api.http_client"
-
   bankiru_api.profiler.collector:
     class: Bankiru\Api\DataCollector\ClientProfilingCollector
     tags:
     - name: data_collector
-      template: 'ApiBundle:Profiler:api_client.html.twig'
+      template: 'BankiruDoctrineApiBundle:Profiler:api_client.html.twig'
       id:       'api_client'
