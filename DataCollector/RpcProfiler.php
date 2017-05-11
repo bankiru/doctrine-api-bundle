@@ -4,8 +4,11 @@ namespace Bankiru\Api\DataCollector;
 
 use ScayTrase\Api\Rpc\RpcRequestInterface;
 use ScayTrase\Api\Rpc\RpcResponseInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
-class RpcProfiler
+class RpcProfiler extends DataCollector
 {
     /** @var RpcRequestInterface[][] */
     private $calls = [];
@@ -19,8 +22,10 @@ class RpcProfiler
      *
      * @param string $clientName
      */
-    public function __construct($clientName) { $this->clientName = (string)$clientName; }
-
+    public function __construct($clientName)
+    {
+        $this->clientName = (string)$clientName;
+    }
 
     /**
      * @param RpcRequestInterface|RpcRequestInterface[] $calls
@@ -34,7 +39,7 @@ class RpcProfiler
         $time = microtime(true);
         foreach ($calls as $call) {
             $this->calls[spl_object_hash($call)]['start']   = $time;
-            $this->calls[spl_object_hash($call)]['request'] = $call;
+            $this->calls[spl_object_hash($call)]['request'] = $this->cloneVar($call);
         }
     }
 
@@ -47,13 +52,13 @@ class RpcProfiler
         $time = microtime(true);
 
         if (null === $request) {
-            $this->responses[]['response'] = $response;
+            $this->responses[]['response'] = $this->cloneVar($response);
 
             return;
         }
 
         $this->calls[spl_object_hash($request)]['stop']     = $time;
-        $this->calls[spl_object_hash($request)]['response'] = $response;
+        $this->calls[spl_object_hash($request)]['response'] = $this->cloneVar($response);
     }
 
     /**
@@ -61,7 +66,7 @@ class RpcProfiler
      */
     public function getCalls()
     {
-        return $this->calls;
+        return $this->data['calls'];
     }
 
     /**
@@ -69,13 +74,30 @@ class RpcProfiler
      */
     public function getResponses()
     {
-        return $this->responses;
+        return $this->data['responses'];
     }
 
     /**
      * @return string
      */
     public function getClientName()
+    {
+        return $this->clientName;
+    }
+
+    /** {@inheritdoc} */
+    public function collect(Request $request, Response $response, \Exception $exception = null)
+    {
+        $this->data      = [
+            'calls'     => $this->calls,
+            'responses' => $this->responses,
+        ];
+        $this->calls     = [];
+        $this->responses = [];
+    }
+
+    /** {@inheritdoc} */
+    public function getName()
     {
         return $this->clientName;
     }

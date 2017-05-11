@@ -83,6 +83,8 @@ final class StopwatchTest extends TestCase
         }
 
         $collector = $container->get('bankiru_api.profiler.collector');
+        $collector->collect(new Request(), new SymfonyResponse());
+
         self::assertCount(1, $collector->getData());
         foreach ($collector->getData() as $profiler) {
             self::assertEquals('test_client', $profiler->getClientName());
@@ -91,7 +93,7 @@ final class StopwatchTest extends TestCase
         }
 
         self::assertEquals('api_client', $collector->getName());
-        $collector->collect(new Request(), new SymfonyResponse());
+
     }
 
     /** {@inheritdoc} */

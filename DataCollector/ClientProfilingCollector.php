@@ -4,9 +4,9 @@ namespace Bankiru\Api\DataCollector;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
-class ClientProfilingCollector implements DataCollectorInterface
+class ClientProfilingCollector extends DataCollector
 {
     /** @var RpcProfiler[] */
     private $profilers = [];
@@ -20,7 +20,8 @@ class ClientProfilingCollector implements DataCollectorInterface
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        //collects data with profilers
+        $this->data      = $this->profilers;
+        $this->profilers = [];
     }
 
     /**
@@ -33,14 +34,13 @@ class ClientProfilingCollector implements DataCollectorInterface
         return 'api_client';
     }
 
-    /**  */
     public function getData()
     {
-        return $this->profilers;
+        return $this->data;
     }
 
     public function addProfiler(RpcProfiler $profiler)
     {
-        $this->profilers[] = $profiler;
+        $this->profilers[$profiler->getName()] = $profiler;
     }
 }

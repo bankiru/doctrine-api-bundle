@@ -1,7 +1,5 @@
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
-
-
 {% block toolbar %}
     {% set failed_responses = false %}
     {% set total_calls = 0 %}
@@ -25,7 +23,6 @@
     {% endif %}
 
     {% set icon %}
-
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
              viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
                 <path fill="#AAAAAA" d="M9.8,18l-3.8,4.4c-0.3,0.3-0.8,0.4-1.1,0L1,18c-0.4-0.5-0.1-1,0.5-1H3V6.4C3,3.8,5.5,2,8.2,2h3.9
@@ -37,7 +34,6 @@
     {% endset %}
 
     {% set text %}
-
         {% for profiler in collector.data %}
             {% set local_failed_responses = 0 %}
             {% for call in profiler.calls %}
@@ -63,7 +59,9 @@
         {% endfor %}
     {% endset %}
 
-    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+    {% if total_calls > 0 %}
+        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+    {% endif %}
 {% endblock %}
 
 {% block head %}
