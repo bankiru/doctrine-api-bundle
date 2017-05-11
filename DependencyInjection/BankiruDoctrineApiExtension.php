@@ -25,7 +25,11 @@ class BankiruDoctrineApiExtension extends Extension
             $loader->load('test.yml');
         }
 
-        $container->setParameter('bankiru_api.logger_id', $config['logger']['id']);
+        if ($this->isConfigEnabled($container, $config['logger'])) {
+            $container->setParameter('bankiru_api.logger.service', $config['logger']['service']);
+            $container->setParameter('bankiru_api.logger.debug_body', $config['logger']['debug_body']);
+        }
+
         $container->setParameter('bankiru_api.profiler_enabled', $config['profiling']);
 
         $configuration = $container->getDefinition('bankiru_api.configuration');

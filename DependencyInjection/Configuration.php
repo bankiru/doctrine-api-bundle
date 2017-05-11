@@ -16,8 +16,15 @@ class Configuration implements ConfigurationInterface
         $root    = $builder->root('api_client');
 
         $logger = $root->children()->arrayNode('logger');
+        $logger->canBeEnabled();
         $logger->addDefaultsIfNotSet();
-        $logger->children()->scalarNode('id')->defaultValue('logger');
+        $logger->beforeNormalization()->ifString()->then(
+            function ($v) {
+                return ['service' => $v, 'enabled' => true];
+            }
+        );
+        $logger->children()->booleanNode('debug_body')->defaultFalse();
+        $logger->children()->scalarNode('service')->defaultValue('logger');
 
         $root->children()->booleanNode('profiling')->defaultValue('%kernel.debug%');
 

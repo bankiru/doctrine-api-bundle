@@ -22,7 +22,8 @@ final class LoggingTest extends TestCase
             [
                 'api_client' => [
                     'logger'    => [
-                        'id' => 'logger',
+                        'service' => 'logger',
+                        'debug_body'   => true,
                     ],
                     'profiling' => false,
                 ],
@@ -37,11 +38,13 @@ final class LoggingTest extends TestCase
         foreach ($registry->all() as $client) {
             self::assertInstanceOf(LoggableRpcClient::class, $client);
         }
+
+        self::assertTrue($container->getParameter('bankiru_api.logger.debug_body'));
     }
 
     /** {@inheritdoc} */
     protected function getCacheDir()
     {
-        return CACHE_DIR;
+        return __DIR__ . '/../build/cache/';
     }
 }

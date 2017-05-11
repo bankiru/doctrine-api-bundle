@@ -13,9 +13,6 @@
         syntaxCheck="false"
         bootstrap="vendor/autoload.php">
 
-    <php>
-        <const name="CACHE_DIR" value="./build"/>
-    </php>
 
     <testsuites>
         <testsuite name="All tests">

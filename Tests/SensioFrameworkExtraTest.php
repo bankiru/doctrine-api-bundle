@@ -55,6 +55,6 @@ final class SensioFrameworkExtraTest extends TestCase
     /** {@inheritdoc} */
     protected function getCacheDir()
     {
-        return CACHE_DIR;
+        return __DIR__.'/../build/cache/';
     }
 }

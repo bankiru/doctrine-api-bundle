@@ -28,7 +28,7 @@ final class StopwatchTest extends TestCase
             ],
             [
                 'api_client' => [
-                    'logger'    => ['id' => false],
+                    'logger'    => ['service' => false],
                     'profiling' => true,
                 ],
             ]
@@ -97,7 +97,7 @@ final class StopwatchTest extends TestCase
     /** {@inheritdoc} */
     protected function getCacheDir()
     {
-        return CACHE_DIR;
+        return __DIR__.'/../build/cache/';
     }
 
     private function getSuccessResponseMock($result)

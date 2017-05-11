@@ -10,6 +10,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class LoggerDecoratorPass implements CompilerPassInterface
 {
+    const LOGGER_SERVICE_PARAMETER = 'bankiru_api.logger.service';
+
     /**
      * {@inheritdoc}
      * @throws InvalidArgumentException
@@ -20,7 +22,7 @@ class LoggerDecoratorPass implements CompilerPassInterface
             return;
         }
 
-        if (false === $container->getParameter('bankiru_api.logger_id')) {
+        if (false === $container->getParameter(self::LOGGER_SERVICE_PARAMETER)) {
             return;
         }
 
@@ -32,7 +34,8 @@ class LoggerDecoratorPass implements CompilerPassInterface
                       ->setArguments(
                           [
                               new Reference($newId . '.inner'),
-                              new Reference($container->getParameter('bankiru_api.logger_id')),
+                              new Reference($container->getParameter(self::LOGGER_SERVICE_PARAMETER)),
+                              '%bankiru_api.logger.debug_body%'
                           ]
                       )
                       ->setPublic(false)
