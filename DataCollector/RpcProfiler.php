@@ -53,7 +53,9 @@ class RpcProfiler
         }
 
         $this->calls[spl_object_hash($request)]['stop']     = $time;
-        $this->calls[spl_object_hash($request)]['response'] = $response;
+
+        // @todo: fix profiler memory issue
+        //$this->calls[spl_object_hash($request)]['response'] = $response;
     }
 
     /**
